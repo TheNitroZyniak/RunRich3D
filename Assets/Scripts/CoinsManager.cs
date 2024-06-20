@@ -3,10 +3,9 @@ using UnityEngine.Events;
 
 public class CoinsManager : MonoBehaviour {
     public static CoinsManager instance;
-    public int coins = 0;
+    private int coins = 0;
     [HideInInspector]
     public UnityEvent<int> onCoinsChange = new UnityEvent<int>();
-    public UnityEvent<IPlayerState> onPlayerStateChange = new UnityEvent<IPlayerState>();
 
     private void Awake() {
         if (instance == null)
@@ -27,5 +26,7 @@ public class CoinsManager : MonoBehaviour {
         AudioManager.instance.PlaySound(0);
     }
 
-
+    public int GetCoins() {
+        return coins;
+    }
 }

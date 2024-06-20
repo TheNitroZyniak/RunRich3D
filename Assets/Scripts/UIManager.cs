@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using DG.Tweening;
@@ -9,13 +8,10 @@ public class UIManager : MonoBehaviour{
 
     public static UIManager instance;
 
-    public TextMeshProUGUI coinsText;
-    [SerializeField] GameObject tutorial;
-    [SerializeField] RectTransform hand;
-
-
-    [SerializeField] GameObject losePopup, victoryPopup;
-
+    [SerializeField] private TextMeshProUGUI coinsText;
+    [SerializeField] private GameObject tutorial;
+    [SerializeField] private RectTransform hand;
+    [SerializeField] private GameObject losePopup, victoryPopup;
 
     private void Awake() {
         if (instance == null) {
@@ -38,18 +34,23 @@ public class UIManager : MonoBehaviour{
             coinsText.text = coins.ToString();
         else {
             coinsText.text = "0";
-
         }
     }
 
 
     public void OpenLosePopup() {
-        losePopup.SetActive(true);
+        StartCoroutine(OpenPopup(false));
     }
 
 
     public void OpenVictoryPopup() {
-        victoryPopup.SetActive(true);
+        StartCoroutine(OpenPopup(true));
+    }
+
+    IEnumerator OpenPopup(bool won) {
+        yield return new WaitForSeconds(2);
+        if(won) victoryPopup.SetActive(true);
+        else losePopup.SetActive(true);
     }
 
     public void DeactivateTutor() {

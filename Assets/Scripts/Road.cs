@@ -1,7 +1,7 @@
 using UnityEngine;
 
 public class Road : MonoBehaviour{
-    [SerializeField] Transform[] PointsForItems;
+    [SerializeField] private Transform[] PointsForItems;
 
 
     private void Start() {

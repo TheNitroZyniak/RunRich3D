@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class PlayerUI : MonoBehaviour{
 
-    public Image coinsSlider;
+    [SerializeField] private Image coinsSlider;
 
     private void Start() {
         CoinsManager.instance.onCoinsChange.AddListener(UpdateSlider);

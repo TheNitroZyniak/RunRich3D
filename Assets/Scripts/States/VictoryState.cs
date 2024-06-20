@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class VictoryState : IPlayerState {
     public void EnterState(PlayerController player) {
-        //player.SetModel(0);
         player.SetAnimation("Victory");
         player.SetSpeed(0);
         AudioManager.instance.PlaySound(3);

@@ -5,18 +5,16 @@ using static UnityEngine.ParticleSystem;
 public class PlayerController : MonoBehaviour{
 
     [SerializeField] private Camera mainCamera;
-    [SerializeField] CharacterController characterController;
-    [SerializeField] Animator anim;
-    [SerializeField] GameObject[] models;
+    [SerializeField] private CharacterController characterController;
+    [SerializeField] private Animator anim;
+    [SerializeField] private GameObject[] models;
 
-    [SerializeField] GameObject particles, red;
-
-    public float moveSpeed = 5f;
+    [SerializeField] private float moveSpeed = 5f;
     private bool isMoving = false;
 
     private IPlayerState currentState;
 
-    bool gameStarted;
+    private bool gameStarted;
 
     public void SetState(IPlayerState state) {
         if (currentState != null)
@@ -38,7 +36,7 @@ public class PlayerController : MonoBehaviour{
         if (Input.GetMouseButtonDown(0)) {
             isMoving = true;
             if (!gameStarted) {
-                CoinsManager.instance.AddCoins(0);
+                CoinsManager.instance.AddCoins(40);
                 UIManager.instance.DeactivateTutor();
                 SetState(new MiddleState());
                 gameStarted = true;
@@ -71,28 +69,37 @@ public class PlayerController : MonoBehaviour{
         }
 
 
-        if (other.CompareTag("Coin")) {
-            CoinsManager.instance.AddCoins(2);
-            Instantiate(particles, other.transform.position, Quaternion.identity);
 
+        if (other.CompareTag("Coin") || other.CompareTag("Good")) {
+            if (other.CompareTag("Coin")) {
+                CoinsManager.instance.AddCoins(2);
+                other.gameObject.SetActive(false);
+            } 
+            else
+                CoinsManager.instance.AddCoins(20);
+
+            GameObject particle = ObjectPooler.Instance.SpawnFromPool("Dollar", other.transform.position, Quaternion.identity);
+            particle.GetComponent<ParticleSystem>().Play();
             CheckChangeState();
         }
-        else if (other.CompareTag("Good")) {
-            CoinsManager.instance.AddCoins(20);
-            CheckChangeState();
-        } else if (other.CompareTag("Bad")) {
+
+        else if (other.CompareTag("Alcohol") || other.CompareTag("Bad")) {
+            if (other.CompareTag("Alcohol")){
+                other.gameObject.SetActive(false);
+            }
+
+            GameObject particle = ObjectPooler.Instance.SpawnFromPool("Blood", other.transform.position, Quaternion.identity);
+            particle.GetComponent<ParticleSystem>().Play();
+
             CoinsManager.instance.SubtractCoins(20);
-            CheckChangeState();
-        } else if (other.CompareTag("Alcohol")) {
-            CoinsManager.instance.SubtractCoins(20);
-            Instantiate(red, other.transform.position, Quaternion.identity);
             CheckChangeState();
         } 
+
         else if (other.CompareTag("Finish")) {
             SetState(new VictoryState());
         }
 
-        other.gameObject.SetActive(false);
+        
     }
 
     public void SetModel(int modelToActivate) {
@@ -111,7 +118,7 @@ public class PlayerController : MonoBehaviour{
 
     void CheckChangeState() {
         IPlayerState newState;
-        int coins = CoinsManager.instance.coins;
+        int coins = CoinsManager.instance.GetCoins();
         if (coins <= 0) newState = new LoseState();   
         else if (coins > 0 && coins <= 30) newState = new PoorState();
         else if (coins > 30 && coins < 70) newState = new MiddleState();

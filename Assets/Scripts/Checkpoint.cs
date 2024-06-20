@@ -1,10 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
 public class Checkpoint : MonoBehaviour{
-    [SerializeField] Transform[] flags;
+    [SerializeField] private Transform[] flags;
 
     private void OnTriggerEnter(Collider other) {
         if (other.CompareTag("Player")) {
